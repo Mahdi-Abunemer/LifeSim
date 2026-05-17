@@ -55,41 +55,41 @@ public abstract class Animal : Organism
 
     protected void StepToward(Point2 target)
     {
-        var dx = BestToroidalStep(Pos.X, target.X, World.Width);
-        var dy = BestToroidalStep(Pos.Y, target.Y, World.Height);
+        var xDirectionStep = BestToroidalStep(Pos.X, target.X, World.Width);
+        var yxDirectionStep = BestToroidalStep(Pos.Y, target.Y, World.Height);
 
         var candidates = new List<Point2>();
-        if (dx != 0)
+        if (xDirectionStep != 0)
         {
-            candidates.Add(World.Wrap(new Point2(Pos.X + dx, Pos.Y)));
+            candidates.Add(World.Wrap(new Point2(Pos.X + xDirectionStep, Pos.Y)));
         }
 
-        if (dy != 0)
+        if (yxDirectionStep != 0)
         {
-            candidates.Add(World.Wrap(new Point2(Pos.X, Pos.Y + dy)));
+            candidates.Add(World.Wrap(new Point2(Pos.X, Pos.Y + yxDirectionStep)));
         }
 
-        if (dx != 0 && dy != 0)
+        if (xDirectionStep != 0 && yxDirectionStep != 0)
         {
-            candidates.Add(World.Wrap(new Point2(Pos.X + dx, Pos.Y + dy)));
+            candidates.Add(World.Wrap(new Point2(Pos.X + xDirectionStep, Pos.Y + yxDirectionStep)));
         }
 
-        var free = candidates.Where(World.IsEmpty).ToList();
-        if (free.Count == 0)
+        var freePositions = candidates.Where(World.IsEmpty).ToList();
+        if (freePositions.Count == 0)
         {
             Wander();
             return;
         }
 
-        World.MoveTo(this, free.Pick()!);
+        World.MoveTo(this, freePositions.Pick()!);
     }
 
     protected void Wander()
     {
-        var options = World.EmptyNeighbors8(Pos).ToList();
-        if (options.Count > 0)
+        var positionOptions = World.EmptyNeighbors8(Pos).ToList();
+        if (positionOptions.Count > 0)
         {
-            World.MoveTo(this, options.Pick()!);
+            World.MoveTo(this, positionOptions.Pick()!);
         }
     }
 
@@ -126,10 +126,10 @@ public abstract class Animal : Organism
     {
         if (Energy >= ReproduceThreshold)
         {
-            var empty = World.EmptyNeighbors8(Pos).ToList();
-            if (empty.Count > 0)
+            var emptyNeighbors = World.EmptyNeighbors8(Pos).ToList();
+            if (emptyNeighbors.Count > 0)
             {
-                var child = MakeChild(empty.Pick()!);
+                var child = MakeChild(emptyNeighbors.Pick()!);
                 Energy /= 2;
                 World.Add(child);
             }

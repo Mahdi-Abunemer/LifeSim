@@ -21,6 +21,21 @@ public class Plant : Organism
     {
         base.Tick();
 
+        TryExtend();
+
+        TryDie();
+    }
+
+    private void TryDie()
+    {
+        if (Age > MaxAge && Rand.Chance(0.01))
+        {
+            World.Remove(this);
+        }
+    }
+
+    private void TryExtend()
+    {
         if (Age >= MatureAge && Rand.Chance(SpreadChance))
         {
             var spots = World.EmptyNeighbors8(Position).ToList();
@@ -28,11 +43,6 @@ public class Plant : Organism
             {
                 World.Add(new Plant(World, spots.Pick()!));
             }
-        }
-
-        if (Age > MaxAge && Rand.Chance(0.01))
-        {
-            World.Remove(this);
         }
     }
 }

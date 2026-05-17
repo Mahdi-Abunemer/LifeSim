@@ -6,10 +6,9 @@ namespace LifeSim;
 
 public abstract class Animal : Organism
 {
-    protected Animal(World world, Point2 pos, Gender? gender = null)
-        : base(world, pos, gender)
-    {
-    }
+    private int Energy { get; set; }
+
+    private int MaxAge { get; set; } = 1000;
 
     protected abstract int Vision { get; }
 
@@ -27,9 +26,10 @@ public abstract class Animal : Organism
 
     public override ConsoleColor? Color => ConsoleColor.White;
 
-    public int Energy { get; set; }
-
-    public int MaxAge { get; set; } = 1000;
+    protected Animal(World world, Point2 pos, Gender? gender = null)
+    : base(world, pos, gender)
+    {
+    }
 
     public override void Tick()
     {
@@ -50,10 +50,10 @@ public abstract class Animal : Organism
 
     protected abstract Animal MakeChild(Point2 p);
 
-    protected static bool AreNeighborsOrSame(Point2 a, Point2 b) =>
+    private static bool AreNeighborsOrSame(Point2 a, Point2 b) =>
         Math.Abs(a.X - b.X) <= 1 && Math.Abs(a.Y - b.Y) <= 1;
 
-    protected void StepToward(Point2 target)
+    private void StepToward(Point2 target)
     {
         var xDirectionStep = BestToroidalStep(Pos.X, target.X, World.Width);
         var yxDirectionStep = BestToroidalStep(Pos.Y, target.Y, World.Height);
@@ -84,7 +84,7 @@ public abstract class Animal : Organism
         World.MoveTo(this, freePositions.Pick()!);
     }
 
-    protected void Wander()
+    private void Wander()
     {
         var positionOptions = World.EmptyNeighbors8(Pos).ToList();
         if (positionOptions.Count > 0)

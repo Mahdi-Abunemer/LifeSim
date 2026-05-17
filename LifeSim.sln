@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E18AC21A-9B1A-4CFC-AE3B-A1214E0A3221}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeSim", "src\LifeSim\LifeSim.csproj", "{51091086-A6AF-41DF-AFDA-827F56365C00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A9738110-733B-49C2-B949-4795208C7DEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeSim.Tests", "tests\LifeSim.Tests\LifeSim.Tests.csproj", "{910F2D3D-3EC6-4FA5-8F6B-967B49576C60}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51091086-A6AF-41DF-AFDA-827F56365C00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51091086-A6AF-41DF-AFDA-827F56365C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51091086-A6AF-41DF-AFDA-827F56365C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51091086-A6AF-41DF-AFDA-827F56365C00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{910F2D3D-3EC6-4FA5-8F6B-967B49576C60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{910F2D3D-3EC6-4FA5-8F6B-967B49576C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{910F2D3D-3EC6-4FA5-8F6B-967B49576C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{910F2D3D-3EC6-4FA5-8F6B-967B49576C60}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{51091086-A6AF-41DF-AFDA-827F56365C00} = {E18AC21A-9B1A-4CFC-AE3B-A1214E0A3221}
+		{910F2D3D-3EC6-4FA5-8F6B-967B49576C60} = {A9738110-733B-49C2-B949-4795208C7DEA}
+	EndGlobalSection
+EndGlobal

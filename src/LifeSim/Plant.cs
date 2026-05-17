@@ -28,7 +28,7 @@ public class Plant : Organism
 
     private void TryDie()
     {
-        if (Age > MaxAge && Rand.Chance(0.01))
+        if (Age > MaxAge && RandomHelper.Chance(0.01))
         {
             World.Remove(this);
         }
@@ -36,7 +36,7 @@ public class Plant : Organism
 
     private void TrySpread()
     {
-        if (Age >= MatureAge && Rand.Chance(SpreadChance))
+        if (Age >= MatureAge && RandomHelper.Chance(SpreadChance))
         {
             var emptyNeighbors = World.EmptyNeighbors8(Position).ToList();
             if (emptyNeighbors.Count > 0)

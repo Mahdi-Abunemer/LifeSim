@@ -119,7 +119,7 @@ public abstract class Animal : Organism
 
     private bool IsOldAndNoChance()
     {
-        return (Age > MaxAge && Rand.Chance(0.02));
+        return (Age > MaxAge && RandomHelper.Chance(0.02));
     }
 
     private void TryReproduce()

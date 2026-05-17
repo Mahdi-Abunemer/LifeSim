@@ -30,7 +30,7 @@ public class StepTests
 
         world.Step();
 
-        Assert.Empty(world.All);
+        Assert.Empty(world.AllOrganisms);
     }
 
     [Fact]

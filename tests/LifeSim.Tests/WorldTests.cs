@@ -28,7 +28,7 @@ public class WorldTests
         world.Add(first);
         world.Add(second);
 
-        Assert.Single(world.All);
+        Assert.Single(world.AllOrganisms);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class WorldTests
         var plantFactory = new PlantFactory();
         world.Seed(100, plantFactory);
 
-        Assert.Equal(4, world.All.Count());
+        Assert.Equal(4, world.AllOrganisms.Count());
     }
 
     [Fact]

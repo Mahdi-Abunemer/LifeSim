@@ -19,24 +19,24 @@ public class World
 
     public int Height => _worldGrid.Height;
 
-    public IEnumerable<Organism> All => _worldGrid.All;
+    public IEnumerable<Organism> AllOrganisms => _worldGrid.All;
 
-    public void Add(Organism org)
+    public void Add(Organism organism)
     {
-        _worldGrid.Add(org);
+        _worldGrid.Add(organism);
     }
 
-    public void Remove(Organism org)
+    public void Remove(Organism organism)
     {
-        _worldGrid.Remove(org);
+        _worldGrid.Remove(organism);
     }
 
-    public void MoveTo(Organism org, Point2 newPos)
+    public void MoveTo(Organism organism, Point2 newPosition)
     {
-        _worldGrid.MoveTo(org, newPos);
+        _worldGrid.MoveTo(organism, newPosition);
     }
 
-    public bool IsEmpty(Point2 p) => _worldGrid.IsEmpty(p);
+    public bool IsEmpty(Point2 position) => _worldGrid.IsEmpty(position);
 
     public Point2 Wrap(Point2 p)
     {
@@ -46,39 +46,42 @@ public class World
     public void Step()
     {
         Tick++;
-        var snapshot = All.OrderBy(_ => RandomHelper.Next(0, int.MaxValue)).ToList();
-        foreach (var o in snapshot)
+
+        var snapshotOrganismsList = AllOrganisms
+            .OrderBy(_ => RandomHelper.Next(0, int.MaxValue)).ToList();
+
+        foreach (var organism in snapshotOrganismsList)
         {
-            if (o.IsAlive)
+            if (organism.IsAlive)
             {
-                o.Tick();
+                organism.Tick();
             }
         }
 
         _worldGrid.RemoveAllDeadOrganisms();
     }
 
-    public IEnumerable<Point2> Neighbors8(Point2 p)
+    public IEnumerable<Point2> Neighbors8(Point2 position)
     {
-        return _worldGrid.Neighbors8(p);
+        return _worldGrid.Neighbors8(position);
     }
 
-    public IEnumerable<Point2> EmptyNeighbors8(Point2 p)
+    public IEnumerable<Point2> EmptyNeighbors8(Point2 position)
     {
-        return _worldGrid.EmptyNeighbors8(p);
+        return _worldGrid.EmptyNeighbors8(position);
     }
 
     public void Seed(int count , IOrganismFactory organismFactory)
     {
         for (var i = 0; i < count; i++)
         {
-            var p = RandomEmptyCell();
-            if (p == null)
+            var position = RandomEmptyCell();
+            if (position == null)
             {
                 break;
             }
 
-            Add(organismFactory.Create(this, p.Value));
+            Add(organismFactory.Create(this, position.Value));
         }
     }
 
@@ -87,15 +90,15 @@ public class World
         return _worldGrid.RandomEmptyCell();
     }
 
-    public Organism? FindNearest<T>(Point2 from, int visionRange)
+    public Organism? FindNearest<T>(Point2 fromPosition, int visionRange)
         where T : Organism
     {
-        return _worldGrid.FindNearest<T>(from, visionRange);
+        return _worldGrid.FindNearest<T>(fromPosition, visionRange);
     }
 
     public string SerializeWorldSnapshot()
     {
-        var items = All.Select(o => $"{o.GetType().Name}@{o.Position.X},{o.Position.Y}");
+        var items = AllOrganisms.Select(o => $"{o.GetType().Name}@{o.Position.X},{o.Position.Y}");
         return $"Tick={Tick} | {string.Join(";", items)}";
     }
 

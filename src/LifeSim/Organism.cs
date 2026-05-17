@@ -4,16 +4,16 @@ namespace LifeSim;
 
 public abstract class Organism
 {
-    protected Organism(World world, Point2 pos, Gender? gender = null)
+    protected Organism(World world, Point2 position, Gender? gender = null)
     {
         World = world;
-        Pos = world.Wrap(pos);
+        Position = world.Wrap(position);
         Gender = gender ?? PickGender();
     }
 
     public World World { get; }
 
-    public Point2 Pos { get; set; }
+    public Point2 Position { get; set; }
 
     public bool IsAlive { get; set; } = true;
 

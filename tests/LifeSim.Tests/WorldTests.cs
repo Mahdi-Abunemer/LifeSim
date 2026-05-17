@@ -38,7 +38,7 @@ public class WorldTests
 
         world.MoveTo(plant, new Point2(5, 4));
 
-        Assert.Equal(new Point2(0, 4), plant.Pos);
+        Assert.Equal(new Point2(0, 4), plant.Position);
     }
 
     [Fact]
@@ -50,9 +50,9 @@ public class WorldTests
         world.Add(first);
         world.Add(second);
 
-        world.MoveTo(first, second.Pos);
+        world.MoveTo(first, second.Position);
 
-        Assert.Equal(new Point2(0, 0), first.Pos);
+        Assert.Equal(new Point2(0, 0), first.Position);
     }
 
     [Fact]

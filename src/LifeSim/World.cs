@@ -25,13 +25,13 @@ public class World
 
     public void Add(Organism org)
     {
-        if (_grid.ContainsKey(org.Pos))
+        if (_grid.ContainsKey(org.Position))
         {
             return;
         }
 
         _organisms.Add(org);
-        _grid[org.Pos] = org;
+        _grid[org.Position] = org;
     }
 
     public void Remove(Organism org)
@@ -42,7 +42,7 @@ public class World
         }
 
         org.IsAlive = false;
-        _grid.Remove(org.Pos);
+        _grid.Remove(org.Position);
     }
 
     public void MoveTo(Organism org, Point2 newPos)
@@ -58,8 +58,8 @@ public class World
             return;
         }
 
-        _grid.Remove(org.Pos);
-        org.Pos = wrappedPos;
+        _grid.Remove(org.Position);
+        org.Position = wrappedPos;
         _grid[wrappedPos] = org;
     }
 
@@ -172,8 +172,8 @@ public class World
         {
             if (o is T)
             {
-                var dx = ToroidalDistance(from.X, o.Pos.X, Width);
-                var dy = ToroidalDistance(from.Y, o.Pos.Y, Height);
+                var dx = ToroidalDistance(from.X, o.Position.X, Width);
+                var dy = ToroidalDistance(from.Y, o.Position.Y, Height);
                 var distance = dx + dy;
                 if (distance <= visionRange && distance < bestDist)
                 {
@@ -188,7 +188,7 @@ public class World
 
     public string SerializeWorldSnapshot()
     {
-        var items = All.Select(o => $"{o.GetType().Name}@{o.Pos.X},{o.Pos.Y}");
+        var items = All.Select(o => $"{o.GetType().Name}@{o.Position.X},{o.Position.Y}");
         return $"Tick={Tick} | {string.Join(";", items)}";
     }
 

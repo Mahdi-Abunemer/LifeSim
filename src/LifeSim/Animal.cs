@@ -26,8 +26,8 @@ public abstract class Animal : Organism
 
     public override ConsoleColor? Color => ConsoleColor.White;
 
-    protected Animal(World world, Point2 pos, Gender? gender = null)
-    : base(world, pos, gender)
+    protected Animal(World world, Point2 position, Gender? gender = null)
+    : base(world, position, gender)
     {
     }
 
@@ -55,23 +55,23 @@ public abstract class Animal : Organism
 
     private void StepToward(Point2 target)
     {
-        var xDirectionStep = BestToroidalStep(Pos.X, target.X, World.Width);
-        var yxDirectionStep = BestToroidalStep(Pos.Y, target.Y, World.Height);
+        var xDirectionStep = BestToroidalStep(Position.X, target.X, World.Width);
+        var yxDirectionStep = BestToroidalStep(Position.Y, target.Y, World.Height);
 
         var candidates = new List<Point2>();
         if (xDirectionStep != 0)
         {
-            candidates.Add(World.Wrap(new Point2(Pos.X + xDirectionStep, Pos.Y)));
+            candidates.Add(World.Wrap(new Point2(Position.X + xDirectionStep, Position.Y)));
         }
 
         if (yxDirectionStep != 0)
         {
-            candidates.Add(World.Wrap(new Point2(Pos.X, Pos.Y + yxDirectionStep)));
+            candidates.Add(World.Wrap(new Point2(Position.X, Position.Y + yxDirectionStep)));
         }
 
         if (xDirectionStep != 0 && yxDirectionStep != 0)
         {
-            candidates.Add(World.Wrap(new Point2(Pos.X + xDirectionStep, Pos.Y + yxDirectionStep)));
+            candidates.Add(World.Wrap(new Point2(Position.X + xDirectionStep, Position.Y + yxDirectionStep)));
         }
 
         var freePositions = candidates.Where(World.IsEmpty).ToList();
@@ -86,7 +86,7 @@ public abstract class Animal : Organism
 
     private void Wander()
     {
-        var positionOptions = World.EmptyNeighbors8(Pos).ToList();
+        var positionOptions = World.EmptyNeighbors8(Position).ToList();
         if (positionOptions.Count > 0)
         {
             World.MoveTo(this, positionOptions.Pick()!);
@@ -126,7 +126,7 @@ public abstract class Animal : Organism
     {
         if (Energy >= ReproduceThreshold)
         {
-            var emptyNeighbors = World.EmptyNeighbors8(Pos).ToList();
+            var emptyNeighbors = World.EmptyNeighbors8(Position).ToList();
             if (emptyNeighbors.Count > 0)
             {
                 var child = MakeChild(emptyNeighbors.Pick()!);
@@ -156,8 +156,8 @@ public abstract class Animal : Organism
 
     private void Hunt(Organism prey)
     {
-        StepToward(prey.Pos);
-        if (AreNeighborsOrSame(Pos, prey.Pos) && prey.IsAlive)
+        StepToward(prey.Position);
+        if (AreNeighborsOrSame(Position, prey.Position) && prey.IsAlive)
         {
             World.Remove(prey);
             Energy += BiteGain;

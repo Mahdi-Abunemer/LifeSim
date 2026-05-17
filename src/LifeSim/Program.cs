@@ -18,9 +18,9 @@ public static class Program
         const int initialPredators = 10;
 
         var world = new World(width, height);
-        world.Seed<Plant>(initialPlants);
-        world.Seed<Herbivore>(initialHerbivores);
-        world.Seed<Predator>(initialPredators);
+        world.Seed(initialPlants, new PlantFactory());
+        world.Seed(initialHerbivores, new HerbivoreFactory());
+        world.Seed(initialPredators,new PredatorFactory());
 
         var paused = false;
         const int delayMs = 120;

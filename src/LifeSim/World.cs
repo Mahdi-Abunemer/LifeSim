@@ -112,8 +112,7 @@ public class World
         }
     }
 
-    public void Seed<T>(int count)
-        where T : Organism
+    public void Seed(int count , IOrganismFactory organismFactory)
     {
         for (var i = 0; i < count; i++)
         {
@@ -123,15 +122,7 @@ public class World
                 break;
             }
 
-            Organism organism = typeof(T).Name switch
-            {
-                nameof(Plant) => new Plant(this, p.Value),
-                nameof(Herbivore) => new Herbivore(this, p.Value),
-                nameof(Predator) => new Predator(this, p.Value),
-                _ => throw new NotSupportedException($"Unknown organism type: {typeof(T).Name}"),
-            };
-
-            Add(organism);
+            Add(organismFactory.Create(this, p.Value));
         }
     }
 

@@ -8,40 +8,19 @@ public static class Program
 {
     public static void Main()
     {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
-        Console.CursorVisible = false;
+        ConfigureConsole();
 
-        const int width = 50;
-        const int height = 22;
-        var initialPlants = (int)(width * height * 0.22);
-        const int initialHerbivores = 28;
-        const int initialPredators = 10;
-
-        var worldGrid = new WorldGrid(width, height);
-        var world = new World(worldGrid);
-        world.Seed(initialPlants, new PlantFactory());
-        world.Seed(initialHerbivores, new HerbivoreFactory());
-        world.Seed(initialPredators,new PredatorFactory());
+        var world = CreateWorld();
 
         var paused = false;
         const int delayMs = 120;
 
         while (true)
         {
-            while (!Console.IsInputRedirected && Console.KeyAvailable)
+            bool flowControl = HandleInput(ref paused);
+            if (!flowControl)
             {
-                var key = Console.ReadKey(true).Key;
-                if (key == ConsoleKey.Q || key == ConsoleKey.Escape)
-                {
-                    Console.ResetColor();
-                    Console.CursorVisible = true;
-                    return;
-                }
-
-                if (key == ConsoleKey.Spacebar || key == ConsoleKey.P)
-                {
-                    paused = !paused;
-                }
+                return;
             }
 
             if (!paused)
@@ -54,17 +33,60 @@ public static class Program
         }
     }
 
+    private static bool HandleInput(ref bool paused)
+    {
+        while (!Console.IsInputRedirected && Console.KeyAvailable)
+        {
+            var key = Console.ReadKey(true).Key;
+            if (key == ConsoleKey.Q || key == ConsoleKey.Escape)
+            {
+                Console.ResetColor();
+                Console.CursorVisible = true;
+                return false;
+            }
+
+            if (key == ConsoleKey.Spacebar || key == ConsoleKey.P)
+            {
+                paused = !paused;
+            }
+        }
+
+        return true;
+    }
+
+    private static World CreateWorld()
+    {
+        const int width = 50;
+        const int height = 22;
+        var initialPlants = (int)(width * height * 0.22);
+        const int initialHerbivores = 28;
+        const int initialPredators = 10;
+
+        var worldGrid = new WorldGrid(width, height);
+        var world = new World(worldGrid);
+        world.Seed(initialPlants, new PlantFactory());
+        world.Seed(initialHerbivores, new HerbivoreFactory());
+        world.Seed(initialPredators, new PredatorFactory());
+        return world;
+    }
+
+    private static void ConfigureConsole()
+    {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.CursorVisible = false;
+    }
+
     private static void RenderWorld(World world)
     {
         Console.SetCursorPosition(0, 0);
 
-        var plants = world.AllOrganisms.OfType<Plant>().Count();
-        var herbs = world.AllOrganisms.OfType<Herbivore>().Count();
-        var preds = world.AllOrganisms.OfType<Predator>().Count();
+        RenderHeader(world);
 
-        Console.ResetColor();
-        Console.WriteLine($"Tick: {world.Tick,-8}  Plants: {plants,-5}  Herbivores: {herbs,-5}  Predators: {preds,-5}   [Space/P] pause, [Q/Esc] quit");
+        RenderGrid(world);
+    }
 
+    private static void RenderGrid(World world)
+    {
         var snapshot = world.GridSnapshot();
         for (var y = 0; y < world.Height; y++)
         {
@@ -84,5 +106,20 @@ public static class Program
 
             Console.WriteLine();
         }
+    }
+
+    private static void RenderHeader(World world)
+    {
+        var plants = world.AllOrganisms.OfType<Plant>().Count();
+        var herbs = world.AllOrganisms.OfType<Herbivore>().Count();
+        var preds = world.AllOrganisms.OfType<Predator>().Count();
+
+        Console.ResetColor();
+        Console.WriteLine(
+            $"Tick: {world.Tick,-8}  " +
+            $"Plants: {plants,-5}  " +
+            $"Herbivores: {herbs,-5}  " +
+            $"Predators: {preds,-5}   " +
+            $"[Space/P] pause, [Q/Esc] quit");
     }
 }

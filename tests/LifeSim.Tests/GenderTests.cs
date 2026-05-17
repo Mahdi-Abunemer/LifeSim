@@ -6,6 +6,10 @@ namespace LifeSim.Tests;
 
 public class GenderTests
 {
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data + Incomplete Testing
+     */
     [Fact]
     public void Plant_HasDefinedRandomGender()
     {
@@ -16,6 +20,10 @@ public class GenderTests
         Assert.True(Enum.IsDefined(typeof(Gender), plant.Gender));
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data
+     */
     [Fact]
     public void Animal_CanBeCreatedWithSpecificGender()
     {

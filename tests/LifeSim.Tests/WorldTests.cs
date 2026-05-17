@@ -6,6 +6,10 @@ namespace LifeSim.Tests;
 
 public class WorldTests
 {
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data, Equivalence Partitioning
+     */
     [Fact]
     public void Wrap_ReturnsToroidalCoordinates()
     {
@@ -17,6 +21,10 @@ public class WorldTests
         Assert.Equal(new Point2(4, 1), wrapped);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Bad Data, Error Guessing
+     */
     [Fact]
     public void Add_DoesNotAddSecondOrganismToSameCell()
     {
@@ -31,6 +39,10 @@ public class WorldTests
         Assert.Single(world.AllOrganisms);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data, Equivalence Partitioning
+     */
     [Fact]
     public void MoveTo_MovesAndWrapsWhenTargetIsEmpty()
     {
@@ -44,6 +56,10 @@ public class WorldTests
         Assert.Equal(new Point2(0, 4), plant.Position);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Bad Data, Error Guessing
+     */
     [Fact]
     public void MoveTo_DoesNotMoveToOccupiedCell()
     {
@@ -59,6 +75,10 @@ public class WorldTests
         Assert.Equal(new Point2(0, 0), first.Position);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data
+     */
     [Fact]
     public void Seed_DoesNotExceedWorldCapacity()
     {
@@ -70,6 +90,10 @@ public class WorldTests
         Assert.Equal(4, world.AllOrganisms.Count());
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data
+     */
     [Fact]
     public void FindNearest_UsesToroidalDistanceAndVision()
     {
@@ -86,6 +110,10 @@ public class WorldTests
         Assert.Same(nearAcrossBorder, found);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Bad Data, Error Guessing
+     */
     [Fact]
     public void RandomEmptyCell_ReturnsNullWhenWorldIsFull()
     {

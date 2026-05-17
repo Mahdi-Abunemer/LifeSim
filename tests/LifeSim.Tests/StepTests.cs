@@ -6,6 +6,10 @@ namespace LifeSim.Tests;
 
 public class StepTests
 {
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data
+     */
     [Fact]
     public void Step_IncrementsTickAndOrganismAge()
     {
@@ -20,6 +24,10 @@ public class StepTests
         Assert.Equal(1, organism.Age);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Bad Data, Error Guessing
+     */
     [Fact]
     public void Step_RemovesDeadOrganismsFromAliveCollection()
     {
@@ -33,6 +41,10 @@ public class StepTests
         Assert.Empty(world.AllOrganisms);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data, Equivalence Partitioning
+     */
     [Fact]
     public void SerializeWorldSnapshot_ContainsTickAndOrganismCoordinates()
     {

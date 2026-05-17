@@ -6,70 +6,41 @@ namespace LifeSim;
 
 public class World
 {
-    private readonly Dictionary<Point2, Organism> _grid = new();
-    private readonly List<Organism> _organisms = new();
+    private readonly WorldGrid _worldGrid;
 
-    public World(int width, int height)
+    public World(WorldGrid worldGrid)
     {
-        Width = width;
-        Height = height;
+        _worldGrid = worldGrid;
     }
-
-    public int Width { get; }
-
-    public int Height { get; }
 
     public int Tick { get; private set; }
 
-    public IEnumerable<Organism> All => _organisms.Where(o => o.IsAlive);
+    public int Width => _worldGrid.Width;
+
+    public int Height => _worldGrid.Height;
+
+    public IEnumerable<Organism> All => _worldGrid.All;
 
     public void Add(Organism org)
     {
-        if (_grid.ContainsKey(org.Position))
-        {
-            return;
-        }
-
-        _organisms.Add(org);
-        _grid[org.Position] = org;
+        _worldGrid.Add(org);
     }
 
     public void Remove(Organism org)
     {
-        if (!org.IsAlive)
-        {
-            return;
-        }
-
-        org.IsAlive = false;
-        _grid.Remove(org.Position);
+        _worldGrid.Remove(org);
     }
 
     public void MoveTo(Organism org, Point2 newPos)
     {
-        if (!org.IsAlive)
-        {
-            return;
-        }
-
-        var wrappedPos = Wrap(newPos);
-        if (_grid.ContainsKey(wrappedPos))
-        {
-            return;
-        }
-
-        _grid.Remove(org.Position);
-        org.Position = wrappedPos;
-        _grid[wrappedPos] = org;
+        _worldGrid.MoveTo(org, newPos);
     }
 
-    public bool IsEmpty(Point2 p) => !_grid.ContainsKey(Wrap(p));
+    public bool IsEmpty(Point2 p) => _worldGrid.IsEmpty(p);
 
     public Point2 Wrap(Point2 p)
     {
-        var x = ((p.X % Width) + Width) % Width;
-        var y = ((p.Y % Height) + Height) % Height;
-        return new Point2(x, y);
+        return _worldGrid.Wrap(p);
     }
 
     public void Step()
@@ -84,32 +55,17 @@ public class World
             }
         }
 
-        _organisms.RemoveAll(o => !o.IsAlive);
+        _worldGrid.RemoveAllDeadOrganisms();
     }
 
     public IEnumerable<Point2> Neighbors8(Point2 p)
     {
-        for (var dy = -1; dy <= 1; dy++)
-        {
-            for (var dx = -1; dx <= 1; dx++)
-            {
-                if (dx != 0 || dy != 0)
-                {
-                    yield return Wrap(new Point2(p.X + dx, p.Y + dy));
-                }
-            }
-        }
+        return _worldGrid.Neighbors8(p);
     }
 
     public IEnumerable<Point2> EmptyNeighbors8(Point2 p)
     {
-        foreach (var n in Neighbors8(p))
-        {
-            if (IsEmpty(n))
-            {
-                yield return n;
-            }
-        }
+        return _worldGrid.EmptyNeighbors8(p);
     }
 
     public void Seed(int count , IOrganismFactory organismFactory)
@@ -128,53 +84,13 @@ public class World
 
     public Point2? RandomEmptyCell()
     {
-        for (var i = 0; i < 500; i++)
-        {
-            var p = new Point2(RandomHelper.Next(0, Width), RandomHelper.Next(0, Height));
-            if (IsEmpty(p))
-            {
-                return p;
-            }
-        }
-
-        var empties = new List<Point2>();
-        for (var y = 0; y < Height; y++)
-        {
-            for (var x = 0; x < Width; x++)
-            {
-                var p = new Point2(x, y);
-                if (IsEmpty(p))
-                {
-                    empties.Add(p);
-                }
-            }
-        }
-
-        return empties.Count == 0 ? null : empties.Pick();
+        return _worldGrid.RandomEmptyCell();
     }
 
     public Organism? FindNearest<T>(Point2 from, int visionRange)
         where T : Organism
     {
-        Organism? best = null;
-        var bestDist = int.MaxValue;
-
-        foreach (var o in All)
-        {
-            if (o is T)
-            {
-                var dx = ToroidalDistance(from.X, o.Position.X, Width);
-                var dy = ToroidalDistance(from.Y, o.Position.Y, Height);
-                var distance = dx + dy;
-                if (distance <= visionRange && distance < bestDist)
-                {
-                    best = o;
-                    bestDist = distance;
-                }
-            }
-        }
-
-        return best;
+        return _worldGrid.FindNearest<T>(from, visionRange);
     }
 
     public string SerializeWorldSnapshot()
@@ -183,11 +99,6 @@ public class World
         return $"Tick={Tick} | {string.Join(";", items)}";
     }
 
-    public IReadOnlyDictionary<Point2, Organism> GridSnapshot() => new Dictionary<Point2, Organism>(_grid);
-
-    private static int ToroidalDistance(int a, int b, int size)
-    {
-        var diff = Math.Abs(a - b);
-        return Math.Min(diff, size - diff);
-    }
+    public IReadOnlyDictionary<Point2, Organism> GridSnapshot() 
+        => _worldGrid.GridSnapshot();
 }

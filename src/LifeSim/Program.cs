@@ -17,7 +17,8 @@ public static class Program
         const int initialHerbivores = 28;
         const int initialPredators = 10;
 
-        var world = new World(width, height);
+        var worldGrid = new WorldGrid(width, height);
+        var world = new World(worldGrid);
         world.Seed(initialPlants, new PlantFactory());
         world.Seed(initialHerbivores, new HerbivoreFactory());
         world.Seed(initialPredators,new PredatorFactory());

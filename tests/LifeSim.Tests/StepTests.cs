@@ -9,7 +9,8 @@ public class StepTests
     [Fact]
     public void Step_IncrementsTickAndOrganismAge()
     {
-        var world = new World(3, 3);
+        var worldGrid = new WorldGrid(3, 3);
+        var world = new World(worldGrid);
         var organism = new AgingOrganism(world, new Point2(0, 0));
         world.Add(organism);
 
@@ -22,7 +23,8 @@ public class StepTests
     [Fact]
     public void Step_RemovesDeadOrganismsFromAliveCollection()
     {
-        var world = new World(3, 3);
+        var worldGrid = new WorldGrid(3, 3);
+        var world = new World(worldGrid);
         var organism = new SelfRemovingOrganism(world, new Point2(0, 0));
         world.Add(organism);
 
@@ -34,7 +36,8 @@ public class StepTests
     [Fact]
     public void SerializeWorldSnapshot_ContainsTickAndOrganismCoordinates()
     {
-        var world = new World(3, 3);
+        var worldGrid = new WorldGrid(3, 3);
+        var world = new World(worldGrid);
         world.Add(new Plant(world, new Point2(1, 2)));
         world.Step();
 

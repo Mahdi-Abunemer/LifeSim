@@ -9,7 +9,8 @@ public class WorldTests
     [Fact]
     public void Wrap_ReturnsToroidalCoordinates()
     {
-        var world = new World(5, 4);
+        var worldGrid = new WorldGrid(5, 4);
+        var world = new World(worldGrid);
 
         var wrapped = world.Wrap(new Point2(-1, 5));
 
@@ -19,7 +20,8 @@ public class WorldTests
     [Fact]
     public void Add_DoesNotAddSecondOrganismToSameCell()
     {
-        var world = new World(5, 5);
+        var worldGrid = new WorldGrid(5, 5);
+        var world = new World(worldGrid);
         var first = new Plant(world, new Point2(1, 1));
         var second = new Plant(world, new Point2(1, 1));
 
@@ -32,7 +34,8 @@ public class WorldTests
     [Fact]
     public void MoveTo_MovesAndWrapsWhenTargetIsEmpty()
     {
-        var world = new World(5, 5);
+        var worldGrid = new WorldGrid(5, 5);
+        var world = new World(worldGrid);
         var plant = new Plant(world, new Point2(4, 4));
         world.Add(plant);
 
@@ -44,7 +47,8 @@ public class WorldTests
     [Fact]
     public void MoveTo_DoesNotMoveToOccupiedCell()
     {
-        var world = new World(5, 5);
+        var worldGrid = new WorldGrid(5, 5);
+        var world = new World(worldGrid);
         var first = new Plant(world, new Point2(0, 0));
         var second = new Plant(world, new Point2(1, 0));
         world.Add(first);
@@ -58,7 +62,8 @@ public class WorldTests
     [Fact]
     public void Seed_DoesNotExceedWorldCapacity()
     {
-        var world = new World(2, 2);
+        var worldGrid = new WorldGrid(2, 2);
+        var world = new World(worldGrid);
         var plantFactory = new PlantFactory();
         world.Seed(100, plantFactory);
 
@@ -68,7 +73,8 @@ public class WorldTests
     [Fact]
     public void FindNearest_UsesToroidalDistanceAndVision()
     {
-        var world = new World(10, 10);
+        var worldGrid = new WorldGrid(10, 10);
+        var world = new World(worldGrid);
         var seekerPoint = new Point2(0, 0);
         var nearAcrossBorder = new Plant(world, new Point2(9, 0));
         var farTarget = new Plant(world, new Point2(5, 5));
@@ -83,7 +89,8 @@ public class WorldTests
     [Fact]
     public void RandomEmptyCell_ReturnsNullWhenWorldIsFull()
     {
-        var world = new World(1, 1);
+        var worldGrid = new WorldGrid(1, 1);
+        var world = new World(worldGrid);
         world.Add(new Plant(world, new Point2(0, 0)));
 
         var empty = world.RandomEmptyCell();

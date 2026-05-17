@@ -35,43 +35,15 @@ public abstract class Animal : Organism
     {
         base.Tick();
 
-        if (Age == 1 && Energy == 0)
-        {
-            Energy = InitialEnergy;
-        }
+        InitializeEnergy();
 
-        var prey = FindPrey();
-        if (prey != null)
-        {
-            StepToward(prey.Pos);
-            if (AreNeighborsOrSame(Pos, prey.Pos) && prey.IsAlive)
-            {
-                World.Remove(prey);
-                Energy += BiteGain;
-            }
-        }
-        else
-        {
-            Wander();
-        }
+        HuntOrWander();
 
-        Energy -= MoveCost;
+        ExpendEnergy();
 
-        if (Energy >= ReproduceThreshold)
-        {
-            var empty = World.EmptyNeighbors8(Pos).ToList();
-            if (empty.Count > 0)
-            {
-                var child = MakeChild(empty.Pick()!);
-                Energy /= 2;
-                World.Add(child);
-            }
-        }
+        TryReproduce();
 
-        if (Energy <= 0 || (Age > MaxAge && Rand.Chance(0.02)))
-        {
-            World.Remove(this);
-        }
+        TryDie();
     }
 
     protected abstract Organism? FindPrey();
@@ -135,5 +107,68 @@ public abstract class Animal : Organism
                     : wrapB;
 
         return Math.Sign(best);
+    }
+
+    private void TryDie()
+    {
+        if (Energy <= 0 || IsOldAndNoChance())
+        {
+            World.Remove(this);
+        }
+    }
+
+    private bool IsOldAndNoChance()
+    {
+        return (Age > MaxAge && Rand.Chance(0.02));
+    }
+
+    private void TryReproduce()
+    {
+        if (Energy >= ReproduceThreshold)
+        {
+            var empty = World.EmptyNeighbors8(Pos).ToList();
+            if (empty.Count > 0)
+            {
+                var child = MakeChild(empty.Pick()!);
+                Energy /= 2;
+                World.Add(child);
+            }
+        }
+    }
+
+    private void ExpendEnergy()
+    {
+        Energy -= MoveCost;
+    }
+
+    private void HuntOrWander()
+    {
+        var prey = FindPrey();
+        if (prey != null)
+        {
+            Hunt(prey);
+        }
+        else
+        {
+            Wander();
+        }
+    }
+
+    private void Hunt(Organism prey)
+    {
+        StepToward(prey.Pos);
+        if (AreNeighborsOrSame(Pos, prey.Pos) && prey.IsAlive)
+        {
+            World.Remove(prey);
+            Energy += BiteGain;
+        }
+    }
+
+    private void InitializeEnergy()
+    {
+        if (Age == 1 && Energy == 0)
+        {
+            Energy = InitialEnergy;
+        }
     }
 }

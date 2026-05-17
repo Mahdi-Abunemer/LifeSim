@@ -21,7 +21,7 @@ public class Plant : Organism
     {
         base.Tick();
 
-        TryExtend();
+        TrySpread();
 
         TryDie();
     }
@@ -34,14 +34,14 @@ public class Plant : Organism
         }
     }
 
-    private void TryExtend()
+    private void TrySpread()
     {
         if (Age >= MatureAge && Rand.Chance(SpreadChance))
         {
-            var spots = World.EmptyNeighbors8(Position).ToList();
-            if (spots.Count > 0)
+            var emptyNeighbors = World.EmptyNeighbors8(Position).ToList();
+            if (emptyNeighbors.Count > 0)
             {
-                World.Add(new Plant(World, spots.Pick()!));
+                World.Add(new Plant(World, emptyNeighbors.Pick()!));
             }
         }
     }

@@ -6,10 +6,15 @@ namespace LifeSim.Tests;
 
 public class StepTests
 {
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data
+     */
     [Fact]
-    public void Step_IncrementsTickAndOrganismAge()
+    public void Step_WithLivingOrganism_IncrementsTickAndOrganismAge()
     {
-        var world = new World(3, 3);
+        var worldGrid = new WorldGrid(3, 3);
+        var world = new World(worldGrid);
         var organism = new AgingOrganism(world, new Point2(0, 0));
         world.Add(organism);
 
@@ -19,22 +24,32 @@ public class StepTests
         Assert.Equal(1, organism.Age);
     }
 
-    [Fact]
-    public void Step_RemovesDeadOrganismsFromAliveCollection()
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Bad Data, Error Guessing
+     */
+    [Fact] 
+    public void Step_WhenOrganismRemoves_RemovesItFromAliveCollection()
     {
-        var world = new World(3, 3);
+        var worldGrid = new WorldGrid(3, 3);
+        var world = new World(worldGrid);
         var organism = new SelfRemovingOrganism(world, new Point2(0, 0));
         world.Add(organism);
 
         world.Step();
 
-        Assert.Empty(world.All);
+        Assert.Empty(world.AllOrganisms);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data, Equivalence Partitioning
+     */
     [Fact]
-    public void SerializeWorldSnapshot_ContainsTickAndOrganismCoordinates()
+    public void SerializeWorldSnapshot_AfterStep_ContainsTickAndOrganismCoordinates()
     {
-        var world = new World(3, 3);
+        var worldGrid = new WorldGrid(3, 3);
+        var world = new World(worldGrid);
         world.Add(new Plant(world, new Point2(1, 2)));
         world.Step();
 

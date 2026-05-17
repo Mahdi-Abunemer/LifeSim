@@ -2,8 +2,8 @@ namespace LifeSim;
 
 public class Herbivore : Animal
 {
-    public Herbivore(World world, Point2 pos, Gender? gender = null)
-        : base(world, pos, gender)
+    public Herbivore(World world, Point2 position, Gender? gender = null)
+        : base(world, position, gender)
     {
     }
 
@@ -21,7 +21,7 @@ public class Herbivore : Animal
 
     public override System.ConsoleColor? Color => System.ConsoleColor.Yellow;
 
-    protected override Organism? FindPrey() => World.FindNearest<Plant>(Pos, Vision);
+    protected override Organism? FindPrey() => World.FindNearest<Plant>(Position, Vision);
 
     protected override Animal MakeChild(Point2 p) => new Herbivore(World, p);
 }

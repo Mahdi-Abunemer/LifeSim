@@ -8,8 +8,8 @@ public class Plant : Organism
     private const double SpreadChance = 0.18;
     private const int MaxAge = 250;
 
-    public Plant(World world, Point2 pos, Gender? gender = null)
-        : base(world, pos, gender)
+    public Plant(World world, Point2 position, Gender? gender = null)
+        : base(world, position, gender)
     {
     }
 
@@ -21,18 +21,28 @@ public class Plant : Organism
     {
         base.Tick();
 
-        if (Age >= MatureAge && Rand.Chance(SpreadChance))
-        {
-            var spots = World.EmptyNeighbors8(Pos).ToList();
-            if (spots.Count > 0)
-            {
-                World.Add(new Plant(World, spots.Pick()!));
-            }
-        }
+        TrySpread();
 
-        if (Age > MaxAge && Rand.Chance(0.01))
+        TryDie();
+    }
+
+    private void TryDie()
+    {
+        if (Age > MaxAge && RandomHelper.Chance(0.01))
         {
             World.Remove(this);
+        }
+    }
+
+    private void TrySpread()
+    {
+        if (Age >= MatureAge && RandomHelper.Chance(SpreadChance))
+        {
+            var emptyNeighbors = World.EmptyNeighbors8(Position).ToList();
+            if (emptyNeighbors.Count > 0)
+            {
+                World.Add(new Plant(World, emptyNeighbors.Pick()!));
+            }
         }
     }
 }

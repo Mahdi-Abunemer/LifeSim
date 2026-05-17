@@ -6,19 +6,29 @@ namespace LifeSim.Tests;
 
 public class GenderTests
 {
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data + Incomplete Testing
+     */
     [Fact]
-    public void Plant_HasDefinedRandomGender()
+    public void Plant_WhenCreated_HasDefinedRandomGender()
     {
-        var world = new World(2, 2);
+        var worldGrid = new WorldGrid(2, 2);
+        var world = new World(worldGrid);
         var plant = new Plant(world, new Point2(0, 0));
 
         Assert.True(Enum.IsDefined(typeof(Gender), plant.Gender));
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data
+     */
     [Fact]
-    public void Animal_CanBeCreatedWithSpecificGender()
+    public void HerbivoreAnimal_WhenCreatedWithSpecificGender_KeepsGender()
     {
-        var world = new World(2, 2);
+        var worldGrid = new WorldGrid(2, 2);
+        var world = new World(worldGrid);
         var herbivore = new Herbivore(world, new Point2(1, 1), Gender.Female);
 
         Assert.Equal(Gender.Female, herbivore.Gender);

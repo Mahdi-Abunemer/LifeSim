@@ -6,69 +6,99 @@ namespace LifeSim.Tests;
 
 public class WorldTests
 {
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data, Equivalence Partitioning
+     */
     [Fact]
-    public void Wrap_ReturnsToroidalCoordinates()
+    public void Wrap_WithNegativePositionValue_ReturnsToroidalCoordinates()
     {
-        var world = new World(5, 4);
+        var worldGrid = new WorldGrid(5, 4);
+        var world = new World(worldGrid);
 
         var wrapped = world.Wrap(new Point2(-1, 5));
 
         Assert.Equal(new Point2(4, 1), wrapped);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Bad Data, Error Guessing
+     */
     [Fact]
-    public void Add_DoesNotAddSecondOrganismToSameCell()
+    public void Add_WhenCellIsFiled_DoesNotAddSecondOrganismToSameCell()
     {
-        var world = new World(5, 5);
+        var worldGrid = new WorldGrid(5, 5);
+        var world = new World(worldGrid);
         var first = new Plant(world, new Point2(1, 1));
         var second = new Plant(world, new Point2(1, 1));
 
         world.Add(first);
         world.Add(second);
 
-        Assert.Single(world.All);
+        Assert.Single(world.AllOrganisms);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data, Equivalence Partitioning
+     */
     [Fact]
-    public void MoveTo_MovesAndWrapsWhenTargetIsEmpty()
+    public void MoveTo_WhenTargetIsEmpty_MovesAndWraps()
     {
-        var world = new World(5, 5);
+        var worldGrid = new WorldGrid(5, 5);
+        var world = new World(worldGrid);
         var plant = new Plant(world, new Point2(4, 4));
         world.Add(plant);
 
         world.MoveTo(plant, new Point2(5, 4));
 
-        Assert.Equal(new Point2(0, 4), plant.Pos);
+        Assert.Equal(new Point2(0, 4), plant.Position);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Bad Data, Error Guessing
+     */
     [Fact]
-    public void MoveTo_DoesNotMoveToOccupiedCell()
+    public void MoveTo_OccupiedIsCell_DoesNotMove()
     {
-        var world = new World(5, 5);
+        var worldGrid = new WorldGrid(5, 5);
+        var world = new World(worldGrid);
         var first = new Plant(world, new Point2(0, 0));
         var second = new Plant(world, new Point2(1, 0));
         world.Add(first);
         world.Add(second);
 
-        world.MoveTo(first, second.Pos);
+        world.MoveTo(first, second.Position);
 
-        Assert.Equal(new Point2(0, 0), first.Pos);
+        Assert.Equal(new Point2(0, 0), first.Position);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data
+     */
     [Fact]
-    public void Seed_DoesNotExceedWorldCapacity()
+    public void Seed_WhenCountParameterOverCapacity_DoesNotExceedWorldCapacity()
     {
-        var world = new World(2, 2);
+        var worldGrid = new WorldGrid(2, 2);
+        var world = new World(worldGrid);
+        var plantFactory = new PlantFactory();
+        world.Seed(100, plantFactory);
 
-        world.Seed<Plant>(100);
-
-        Assert.Equal(4, world.All.Count());
+        Assert.Equal(4, world.AllOrganisms.Count());
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Good Data
+     */
     [Fact]
-    public void FindNearest_UsesToroidalDistanceAndVision()
+    public void FindNearest_WithToroidalDistanceAndVision_ReturnsNearestOrganism()
     {
-        var world = new World(10, 10);
+        var worldGrid = new WorldGrid(10, 10);
+        var world = new World(worldGrid);
         var seekerPoint = new Point2(0, 0);
         var nearAcrossBorder = new Plant(world, new Point2(9, 0));
         var farTarget = new Plant(world, new Point2(5, 5));
@@ -80,10 +110,15 @@ public class WorldTests
         Assert.Same(nearAcrossBorder, found);
     }
 
+    /*
+     * Tests Tricks used in this method:
+     * Classes of Bad Data, Error Guessing
+     */
     [Fact]
-    public void RandomEmptyCell_ReturnsNullWhenWorldIsFull()
+    public void RandomEmptyCell_WhenWorldIsFull_ReturnsNull()
     {
-        var world = new World(1, 1);
+        var worldGrid = new WorldGrid(1, 1);
+        var world = new World(worldGrid);
         world.Add(new Plant(world, new Point2(0, 0)));
 
         var empty = world.RandomEmptyCell();

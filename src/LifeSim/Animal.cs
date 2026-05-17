@@ -6,10 +6,9 @@ namespace LifeSim;
 
 public abstract class Animal : Organism
 {
-    protected Animal(World world, Point2 pos, Gender? gender = null)
-        : base(world, pos, gender)
-    {
-    }
+    private int Energy { get; set; }
+
+    private int MaxAge { get; set; } = 1000;
 
     protected abstract int Vision { get; }
 
@@ -27,97 +26,70 @@ public abstract class Animal : Organism
 
     public override ConsoleColor? Color => ConsoleColor.White;
 
-    public int Energy { get; set; }
-
-    public int MaxAge { get; set; } = 1000;
+    protected Animal(World world, Point2 position, Gender? gender = null)
+    : base(world, position, gender)
+    {
+    }
 
     public override void Tick()
     {
         base.Tick();
 
-        if (Age == 1 && Energy == 0)
-        {
-            Energy = InitialEnergy;
-        }
+        InitializeEnergy();
 
-        var prey = FindPrey();
-        if (prey != null)
-        {
-            StepToward(prey.Pos);
-            if (AreNeighborsOrSame(Pos, prey.Pos) && prey.IsAlive)
-            {
-                World.Remove(prey);
-                Energy += BiteGain;
-            }
-        }
-        else
-        {
-            Wander();
-        }
+        HuntOrWander();
 
-        Energy -= MoveCost;
+        ExpendEnergy();
 
-        if (Energy >= ReproduceThreshold)
-        {
-            var empty = World.EmptyNeighbors8(Pos).ToList();
-            if (empty.Count > 0)
-            {
-                var child = MakeChild(empty.Pick()!);
-                Energy /= 2;
-                World.Add(child);
-            }
-        }
+        TryReproduce();
 
-        if (Energy <= 0 || (Age > MaxAge && Rand.Chance(0.02)))
-        {
-            World.Remove(this);
-        }
+        TryDie();
     }
 
     protected abstract Organism? FindPrey();
 
     protected abstract Animal MakeChild(Point2 p);
 
-    protected static bool AreNeighborsOrSame(Point2 a, Point2 b) =>
+    private static bool AreNeighborsOrSame(Point2 a, Point2 b) =>
         Math.Abs(a.X - b.X) <= 1 && Math.Abs(a.Y - b.Y) <= 1;
 
-    protected void StepToward(Point2 target)
+    private void StepToward(Point2 target)
     {
-        var dx = BestToroidalStep(Pos.X, target.X, World.Width);
-        var dy = BestToroidalStep(Pos.Y, target.Y, World.Height);
+        var xDirectionStep = BestToroidalStep(Position.X, target.X, World.Width);
+        var yxDirectionStep = BestToroidalStep(Position.Y, target.Y, World.Height);
 
         var candidates = new List<Point2>();
-        if (dx != 0)
+        if (xDirectionStep != 0)
         {
-            candidates.Add(World.Wrap(new Point2(Pos.X + dx, Pos.Y)));
+            candidates.Add(World.Wrap(new Point2(Position.X + xDirectionStep, Position.Y)));
         }
 
-        if (dy != 0)
+        if (yxDirectionStep != 0)
         {
-            candidates.Add(World.Wrap(new Point2(Pos.X, Pos.Y + dy)));
+            candidates.Add(World.Wrap(new Point2(Position.X, Position.Y + yxDirectionStep)));
         }
 
-        if (dx != 0 && dy != 0)
+        if (xDirectionStep != 0 && yxDirectionStep != 0)
         {
-            candidates.Add(World.Wrap(new Point2(Pos.X + dx, Pos.Y + dy)));
+            candidates.Add(World.Wrap(new Point2(Position.X + xDirectionStep, Position.Y + yxDirectionStep)));
         }
 
-        var free = candidates.Where(World.IsEmpty).ToList();
-        if (free.Count == 0)
+        var freePositions = candidates.Where(World.IsEmpty).ToList();
+        if (freePositions.Count == 0)
         {
             Wander();
             return;
         }
 
-        World.MoveTo(this, free.Pick()!);
+        World.MoveTo(this, freePositions.Pick()!);
     }
 
-    protected void Wander()
+    private void Wander()
     {
-        var options = World.EmptyNeighbors8(Pos).ToList();
-        if (options.Count > 0)
+        var positionOptions = World.EmptyNeighbors8(Position).ToList();
+        if (positionOptions.Count > 0)
         {
-            World.MoveTo(this, options.Pick()!);
+            World.MoveTo(this, positionOptions.Pick()!);
         }
     }
 
@@ -135,5 +107,68 @@ public abstract class Animal : Organism
                     : wrapB;
 
         return Math.Sign(best);
+    }
+
+    private void TryDie()
+    {
+        if (Energy <= 0 || IsOldAndNoChance())
+        {
+            World.Remove(this);
+        }
+    }
+
+    private bool IsOldAndNoChance()
+    {
+        return (Age > MaxAge && RandomHelper.Chance(0.02));
+    }
+
+    private void TryReproduce()
+    {
+        if (Energy >= ReproduceThreshold)
+        {
+            var emptyNeighbors = World.EmptyNeighbors8(Position).ToList();
+            if (emptyNeighbors.Count > 0)
+            {
+                var child = MakeChild(emptyNeighbors.Pick()!);
+                Energy /= 2;
+                World.Add(child);
+            }
+        }
+    }
+
+    private void ExpendEnergy()
+    {
+        Energy -= MoveCost;
+    }
+
+    private void HuntOrWander()
+    {
+        var prey = FindPrey();
+        if (prey != null)
+        {
+            Hunt(prey);
+        }
+        else
+        {
+            Wander();
+        }
+    }
+
+    private void Hunt(Organism prey)
+    {
+        StepToward(prey.Position);
+        if (AreNeighborsOrSame(Position, prey.Position) && prey.IsAlive)
+        {
+            World.Remove(prey);
+            Energy += BiteGain;
+        }
+    }
+
+    private void InitializeEnergy()
+    {
+        if (Age == 1 && Energy == 0)
+        {
+            Energy = InitialEnergy;
+        }
     }
 }

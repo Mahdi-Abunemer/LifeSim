@@ -11,7 +11,7 @@ public class GenderTests
      * Classes of Good Data + Incomplete Testing
      */
     [Fact]
-    public void Plant_HasDefinedRandomGender()
+    public void Plant_WhenCreated_HasDefinedRandomGender()
     {
         var worldGrid = new WorldGrid(2, 2);
         var world = new World(worldGrid);
@@ -25,7 +25,7 @@ public class GenderTests
      * Classes of Good Data
      */
     [Fact]
-    public void Animal_CanBeCreatedWithSpecificGender()
+    public void HerbivoreAnimal_WhenCreatedWithSpecificGender_KeepsGender()
     {
         var worldGrid = new WorldGrid(2, 2);
         var world = new World(worldGrid);

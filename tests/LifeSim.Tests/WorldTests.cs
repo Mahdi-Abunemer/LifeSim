@@ -11,7 +11,7 @@ public class WorldTests
      * Classes of Good Data, Equivalence Partitioning
      */
     [Fact]
-    public void Wrap_ReturnsToroidalCoordinates()
+    public void Wrap_WithNegativePositionValue_ReturnsToroidalCoordinates()
     {
         var worldGrid = new WorldGrid(5, 4);
         var world = new World(worldGrid);
@@ -26,7 +26,7 @@ public class WorldTests
      * Classes of Bad Data, Error Guessing
      */
     [Fact]
-    public void Add_DoesNotAddSecondOrganismToSameCell()
+    public void Add_WhenCellIsFiled_DoesNotAddSecondOrganismToSameCell()
     {
         var worldGrid = new WorldGrid(5, 5);
         var world = new World(worldGrid);
@@ -44,7 +44,7 @@ public class WorldTests
      * Classes of Good Data, Equivalence Partitioning
      */
     [Fact]
-    public void MoveTo_MovesAndWrapsWhenTargetIsEmpty()
+    public void MoveTo_WhenTargetIsEmpty_MovesAndWraps()
     {
         var worldGrid = new WorldGrid(5, 5);
         var world = new World(worldGrid);
@@ -61,7 +61,7 @@ public class WorldTests
      * Classes of Bad Data, Error Guessing
      */
     [Fact]
-    public void MoveTo_DoesNotMoveToOccupiedCell()
+    public void MoveTo_OccupiedIsCell_DoesNotMove()
     {
         var worldGrid = new WorldGrid(5, 5);
         var world = new World(worldGrid);
@@ -80,7 +80,7 @@ public class WorldTests
      * Classes of Good Data
      */
     [Fact]
-    public void Seed_DoesNotExceedWorldCapacity()
+    public void Seed_WhenCountParameterOverCapacity_DoesNotExceedWorldCapacity()
     {
         var worldGrid = new WorldGrid(2, 2);
         var world = new World(worldGrid);
@@ -95,7 +95,7 @@ public class WorldTests
      * Classes of Good Data
      */
     [Fact]
-    public void FindNearest_UsesToroidalDistanceAndVision()
+    public void FindNearest_WithToroidalDistanceAndVision_ReturnsNearestOrganism()
     {
         var worldGrid = new WorldGrid(10, 10);
         var world = new World(worldGrid);
@@ -115,7 +115,7 @@ public class WorldTests
      * Classes of Bad Data, Error Guessing
      */
     [Fact]
-    public void RandomEmptyCell_ReturnsNullWhenWorldIsFull()
+    public void RandomEmptyCell_WhenWorldIsFull_ReturnsNull()
     {
         var worldGrid = new WorldGrid(1, 1);
         var world = new World(worldGrid);

@@ -11,7 +11,7 @@ public class StepTests
      * Classes of Good Data
      */
     [Fact]
-    public void Step_IncrementsTickAndOrganismAge()
+    public void Step_WithLivingOrganism_IncrementsTickAndOrganismAge()
     {
         var worldGrid = new WorldGrid(3, 3);
         var world = new World(worldGrid);
@@ -28,8 +28,8 @@ public class StepTests
      * Tests Tricks used in this method:
      * Classes of Bad Data, Error Guessing
      */
-    [Fact]
-    public void Step_RemovesDeadOrganismsFromAliveCollection()
+    [Fact] 
+    public void Step_WhenOrganismRemoves_RemovesItFromAliveCollection()
     {
         var worldGrid = new WorldGrid(3, 3);
         var world = new World(worldGrid);
@@ -46,7 +46,7 @@ public class StepTests
      * Classes of Good Data, Equivalence Partitioning
      */
     [Fact]
-    public void SerializeWorldSnapshot_ContainsTickAndOrganismCoordinates()
+    public void SerializeWorldSnapshot_AfterStep_ContainsTickAndOrganismCoordinates()
     {
         var worldGrid = new WorldGrid(3, 3);
         var world = new World(worldGrid);
